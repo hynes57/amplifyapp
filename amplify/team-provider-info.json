@@ -15,6 +15,9 @@
       "auth": {
         "amplifyapp0a93aa71": {},
         "amplifyapp": {}
+      },
+      "api": {
+        "amplifyapp": {}
       }
     }
   }
