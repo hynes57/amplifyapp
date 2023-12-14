@@ -35,8 +35,19 @@ const App = ({ signOut }) => {
     await Promise.all(
       notesFromAPI.map(async (note) => {
         if (note.image) {
-          const url = await getUrl(note.name);
-          note.image = url.url;
+          const getUrlResult = await getUrl({
+            key: note.name,
+            options: {
+              accessLevel: 'guest' , // can be 'private', 'protected', or 'guest' but defaults to `guest`
+              //targetIdentityId: 'XXXXXXX', // id of another user, if `accessLevel` is `guest`
+              validateObjectExistence: false,  // defaults to false
+              expiresIn: 900, // validity of the URL, in seconds. defaults to 900 (15 minutes) and maxes at 3600 (1 hour)
+              useAccelerateEndpoint: false // Whether to use accelerate endpoint or not. Defaults to false.
+            },
+          });
+          console.log('signed URL: ', getUrlResult.url);
+          console.log('URL expires at: ', getUrlResult.expiresAt);
+          note.image = getUrlResult.url;
         }
         return note;
       })
@@ -123,7 +134,7 @@ const App = ({ signOut }) => {
           {note.image && (
             <Image
               src={note.image}
-              alt={`visual aid for ${notes.name}`}
+              alt={`visual aid for ${note.name}`}
               style={{ width: 400 }}
             />
           )}
